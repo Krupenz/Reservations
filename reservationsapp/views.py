@@ -41,7 +41,7 @@ def pasazer(request,id):
         if form.is_valid():
             if miejsca == 0:
                 form = RezerwacjaForm()
-                context = {'lot': lot, 'form': form, 'miejsca': miejsca, 'brak_miejsc':'brak miejsc!'}
+                context = {'lot': lot, 'form': form, 'miejsca': miejsca, 'brak_miejsc': 'brak miejsc!'}
                 return render(request, template, context)
 
             pasazer=Pasazerowie(imie=form.cleaned_data.get('imie'), nazwisko=form.cleaned_data.get('nazwisko'),pesel=form.cleaned_data.get('pesel'))
@@ -57,14 +57,14 @@ def pasazer(request,id):
             return HttpResponseRedirect(url)
         else:
             form = RezerwacjaForm()
-            context = {'lot': lot, 'form': form}
+            context = {'lot': lot, 'form': form,'miejsca': miejsca, 'pesel':"Ten pesel istnieje już w bazie!"}
         return render(request, template, context)
 
 
 def rezerwacje(request, id):
     if request.method == 'GET':
         template="rezerwacje.html"
-        rezerwacje = Rezerwacje.objects.all()
+        rezerwacje = Rezerwacje.objects.all().order_by('-id')[:10]
         return render(request, template, {'rezerwacje': rezerwacje})
     elif request.method == 'POST':
         if request.POST.get('nowa_rezerwacja'):
