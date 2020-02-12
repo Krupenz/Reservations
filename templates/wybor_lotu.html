@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block flight %}
+<div class="row">
+  <div class="col-12 m-auto">
+    <form method="POST" autocomplete="off">
+        {%csrf_token%}
+        <h4>Wybierz lot</h4>
+        <select name="lot" required="true">
+            <option></option>
+            {% for lot in loty%}
+            <option id="{{lot.id}}">{{lot}}</option>
+            {%endfor%}
+        </select> <br> <br>
+      <input style="width:170px" class="btn btn-success" type="submit" value="Zatwierdź">
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+
+
+

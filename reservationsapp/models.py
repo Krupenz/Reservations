@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import signals
-
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 class Pasazerowie(models.Model):
     pesel = models.CharField(max_length=11, unique=True)
@@ -37,7 +38,7 @@ class Samoloty(models.Model):
         return "Samolot nr " + str(self.id) + " ilosc miejsc - " + str(self.ilosc_miejsc)
 
     class Meta:
-        verbose_name_plural="Samoloty"
+        verbose_name_plural = "Samoloty"
 
 
 class Loty(models.Model):
@@ -48,10 +49,17 @@ class Loty(models.Model):
     numer_lotu = models.CharField(max_length=10)
 
     def __str__(self):
-        return str(self.trasa) + " " + str(self.data_odlotu)[:19] + " " + self.numer_lotu
+        return str(self.trasa) + " odlot: " + str(self.data_odlotu)[:19] + " przylot: " +  str(self.data_przylotu)[:19] + " " + self.numer_lotu
+
+    def clean(self):
+        if self.data_przylotu < self.data_odlotu:
+            raise ValidationError('Data przylotu musi być późniejsza od daty odlotu!')
+        elif self.data_odlotu < timezone.now():
+            raise ValidationError('Nie zapisuj lotów na przeszlosc!')
 
     class Meta:
-        verbose_name_plural="Loty"
+        verbose_name_plural = "Loty"
+
 
 
 class Rezerwacje(models.Model):

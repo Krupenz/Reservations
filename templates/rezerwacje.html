@@ -3,20 +3,30 @@
 {% block content %}
 <div class="col-12">
   <br>
-  <input style="width:170px"class="btn btn-success" type="submit" value="Zrób nową rezerwacje"> <br><br>
+  <form method="POST">
+    {% csrf_token %}
+    <input style="width:170px"class="btn btn-success" name='nowa_rezerwacja' type="submit" value="Zrób nową rezerwacje"> <br><br>
+  </form>
+
   <h3>Ostatnie rezerwacje</h3>
 
   <table class="table table-striped table-bordered table-sm">
     <thead>
       <th>Pasazer</th>
       <th>Lot</th>
+      <th>Data odlotu</th>
+      <th>Data przylotu</th>
+      <th>Numer lotu</th>
       <th>Data Rezerwacji</th>
     </thead>
     <tbody>
     {%for x in rezerwacje %}
     <tr>
       <td>{{x.pasazer}}</td>
-      <td>{{x.lot}}</td>
+      <td>{{x.lot.trasa}}</td>
+      <td>{{x.lot.data_odlotu}}</td>
+      <td>{{x.lot.data_przylotu}}</td>
+      <td>{{x.lot.numer_lotu}}</td>
       <td>{{x.data}}</td>
     </tr>
     {% endfor %}
