@@ -52,9 +52,11 @@ class Loty(models.Model):
 
     class Meta:
         verbose_name_plural="Loty"
+
+
 class Rezerwacje(models.Model):
     pasazer = models.ForeignKey(Pasazerowie, on_delete=models.CASCADE)
-    lot = models.ForeignKey(Loty, on_delete=models.CASCADE)
+    lot = models.ForeignKey(Loty, on_delete=models.CASCADE,default=0)
     data = models.DateTimeField()
 
     def __str__(self):

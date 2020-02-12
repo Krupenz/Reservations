@@ -4,18 +4,18 @@ from django.core.exceptions import ValidationError
 class RezerwacjaForm(forms.Form):
     imie = forms.CharField(max_length=20, widget=forms.TextInput(attrs=
                                                                  {"placeholder": "Imie",
-                                                                 #"required": "required",
-                                                                 #"pattern":"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ']{1,20}",
-                                                                 #"maxlength":"20",
-                                                                 #"title": "Dozwolone znaki : A-Z a-z żźćńółęąśŻŹĆĄŚĘŁÓŃ' oraz spacja"
+                                                                 "required": "required",
+                                                                 "pattern":"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ']{1,20}",
+                                                                 "maxlength":"20",
+                                                                 "title": "Dozwolone znaki : A-Z a-z żźćńółęąśŻŹĆĄŚĘŁÓŃ' oraz spacja"
                                                                   }
                                                                  )
                            )
     nazwisko = forms.CharField(max_length=20, widget=forms.TextInput(attrs={"placeholder": "Nazwisko",
-                                                                            #"required": "required",
-                                                                            #"pattern":"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ' ]{1,20}",
-                                                                            #"maxlength":"20",
-                                                                            #"title":"Dozwolone znaki : A-Z a-z żźćńółęąśŻŹĆĄŚĘŁÓŃ' oraz spacja"
+                                                                            "required": "required",
+                                                                            "pattern":"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ' ]{1,20}",
+                                                                            "maxlength":"20",
+                                                                            "title":"Dozwolone znaki : A-Z a-z żźćńółęąśŻŹĆĄŚĘŁÓŃ' oraz spacja"
                                                                             }
                                                                  )
                                )

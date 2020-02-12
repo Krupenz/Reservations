@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import RezerwacjaForm,LotForm
 from django.http import HttpResponseRedirect
 from time import *
+from django.utils import timezone
 # Create your views here.
 
 def wybor_lotu(request):
@@ -39,10 +40,9 @@ def pasazer(request,id):
         if form.is_valid():
             pasazer=Pasazerowie(imie=form.cleaned_data.get('imie'), nazwisko=form.cleaned_data.get('nazwisko'),pesel=form.cleaned_data.get('pesel'))
             pasazer.save()
-            rezerwacja=Rezerwacje(pasazer_id=pasazer.id, lot_id=id, data_rezerwacji=time())
+            rezerwacja=Rezerwacje(pasazer_id=pasazer.id, lot_id=id, data=timezone.now())
             rezerwacja.save()
-
-            url="rezerwacje/"
+            url="../../" + str(id) + "/rezerwacje/"
             return HttpResponseRedirect(url)
         else:
             form = RezerwacjaForm()
@@ -51,9 +51,11 @@ def pasazer(request,id):
 
 
 def rezerwacje(request, id):
-    template="rezerwacje.html"
-    rezerwacje = Rezerwacje.objects.all()
-    return render(request, template, {'rezerwacje': rezerwacje})
+    if request.method == 'GET':
+        template="rezerwacje.html"
+        rezerwacje = Rezerwacje.objects.all()
+        return render(request, template, {'rezerwacje': rezerwacje})
+    #elif request.method == 'POST':
 
 
 def redirect(request):

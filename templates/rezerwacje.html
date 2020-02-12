@@ -13,17 +13,13 @@
       <th>Data Rezerwacji</th>
     </thead>
     <tbody>
-      {%for x in rezerwacje%}
-      <tr>
-        {{x.pasazer}}
-      </tr>
-      <tr>
-        {{x.lot}}
-      </tr>
-      <tr>
-        {{x.data_rezerwacji}}
-      </tr>
-      {% endfor %}
+    {%for x in rezerwacje %}
+    <tr>
+      <td>{{x.pasazer}}</td>
+      <td>{{x.lot}}</td>
+      <td>{{x.data}}</td>
+    </tr>
+    {% endfor %}
     </tbody>
   </table>
 
