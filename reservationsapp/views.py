@@ -1,79 +1,60 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
-
-
+from .forms import RezerwacjaForm,LotForm
+from django.http import HttpResponseRedirect
+from time import *
 # Create your views here.
 
-
-@csrf_exempt
-def pasazer(request):
+def wybor_lotu(request):
+    loty = Loty.objects.all()
+    template ="wybor_lotu.html"
+    context = {'loty': loty}
     if request.method == 'GET':
-        template = "pasazer.html"
-        loty = Loty.objects.all()
-        context = {'loty': loty}
+        return render(request, template, context)
+    elif request.method == 'POST':
+        wybrany_lot = request.POST.get('lot')
+        for x in loty:
+            if str(wybrany_lot) == str(x):
+                wybrany_lot = Loty(pk=x.id)
+                context={'lot': wybrany_lot}
+                template = str(x.id) + "/pasazer"
+                return HttpResponseRedirect(template)
+        return(request,template,context)
+
+
+
+
+def pasazer(request,id):
+    template = "pasazer.html"
+    lot = Loty.objects.get(pk=id)
+    pasazerowie=Pasazerowie.objects.all()
+    miejsca=lot.samolot.ilosc_miejsc-Siedzenia.objects.filter(lot_id=id).count()
+    if request.method == 'GET':
+        form = RezerwacjaForm()
+        context = {'lot': lot, 'form': form, 'miejsca': miejsca}
         return render(request, template, context)
     elif request.method == "POST":
-        template = 'siedzenia.html'
-        imie = request.POST.get('imie')
-        nazwisko = request.POST.get('nazwisko')
-        pesel = request.POST.get('pesel')
-        lot = request.POST.get('lot')
-        pasazerowie = Pasazerowie.objects.all()
+        form = RezerwacjaForm(request.POST)
+        if form.is_valid():
+            pasazer=Pasazerowie(imie=form.cleaned_data.get('imie'), nazwisko=form.cleaned_data.get('nazwisko'),pesel=form.cleaned_data.get('pesel'))
+            pasazer.save()
+            rezerwacja=Rezerwacje(pasazer_id=pasazer.id, lot_id=id, data_rezerwacji=time())
+            rezerwacja.save()
 
-        for x in pasazerowie:
-            if pesel == x.pesel:
-                if nazwisko == x.nazwisko:
-                    if imie == x.imie:
-                        existing_id = x.id
-                        url = '/siedzenia/' + str(x.id) + "/" + str(lot)
-                        return redirect(url)
-                    else:
-                        loty = Loty.objects.all()
-                        error = 'Podany pesel istnieje juz w bazie!'
-                        context = {'loty': loty, 'error': error}
-                        template = "pasazer.html"
-
-                        return render(request, template, context)
-                else:
-                    loty = Loty.objects.all()
-                    error = 'Podany pesel istnieje juz w bazie!'
-                    context = {'loty': loty, 'error': error}
-                    template = "pasazer.html"
-
-                    return render(request, template, context)
-        pasazerek = Pasazerowie(imie=imie, nazwisko=nazwisko, pesel=pesel)
-        pasazerek.save()
-        siedzonka = Siedzenia.objects.filter(lot_id=lot.id)
-        for x in siedzonka:
-            if x.pasazer is None:
-                x.pasazer == pasazerek
-                x.save(update_fields=['pasazer'])
-                continue
-        pasazer_id = pasazerek.id
-        url = '/siedzenia/' + str(pasazer_id) + "/" + str(lot)
-
-        return redirect(url)
+            url="rezerwacje/"
+            return HttpResponseRedirect(url)
+        else:
+            form = RezerwacjaForm()
+            context = {'lot': lot, 'form': form}
+        return render(request,template,context)
 
 
-def siedzenia(request, pasazer_id,lot):
-    if request.method == 'GET':
-        loty=Loty.objects.all()
-        for y in loty:
-            if str(lot) == str(y):
-                id_lotu = y.id
-        lot = Loty.objects.get(pk=id_lotu)
-        template = "siedzenia.html"
-        siedzenia = Siedzenia.objects.filter(lot_id=id_lotu)
-        wymagania = Wymagania.objects.all()
-
-        aktualny_pasazer = Pasazerowie.objects.get(pk=pasazer_id)
-        context = {'aktualny_pasazer': aktualny_pasazer, 'siedzenia': siedzenia, 'wymagania': wymagania}
-        return render(request, template, context)
-    if request.method == 'POST':
-        url = '/siedzenia/' + str(pasazer_id)
-        return redirect(url)
+def rezerwacje(request, id):
+    template="rezerwacje.html"
+    rezerwacje = Rezerwacje.objects.all()
+    return render(request, template, {'rezerwacje': rezerwacje})
 
 
-def rezerwacje(request):
-    return render(request, template, context)
+def redirect(request):
+    return HttpResponseRedirect('/wybor_lotu')

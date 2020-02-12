@@ -3,25 +3,30 @@
 {% block content %}
 <div class="row">
   <div class="col-12 m-auto">
+      <p>Rezerwacja na lot {{lot.trasa}} {{lot.data_odlotu}}</p>
+      <p>Liczba wolnych miejsc: {{miejsca}}</p>
     <form method="POST" autocomplete="off">
-      <label>Imie:</label> <br> <input type="text" id="imie" name="imie" required="required" pattern="[a-zA-Z]{1,20}" title="Imię to ciąg znaków A-Z do 20 znaków!"><br>
-      <label>Nazwisko:</label> <br> <input type="text" id="nazwisko" name="nazwisko" required="required" pattern="[a-zA-Z]{1,20}" title="Nazwisko to ciąg znaków A-Z do 20 znaków!"><br>
+      <!--<label>Imie:</label> <br> <input type="text" id="imie" name="imie" required="required" pattern="[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]{1,20}" maxlength="20" title="Imię to ciąg znaków A-Z do 20 znaków!"><br>
+      <label>Nazwisko:</label> <br> <input type="text" id="nazwisko" name="nazwisko" required="required" pattern="[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]{1,20}" maxlength="20" title="Nazwisko to ciąg znaków A-Z do 20 znaków!"><br>
       <label>PESEL:</label> <br> <input type="text" id="pesel" name="pesel" required="required" pattern="^\d{11}$" title="Pesel to ciąg 11 cyfr!"><br> <br>
-        <p style="font-color: red">{{error}}</p>
-        <label>Wybierz lot:</label> <br>
-        <select name="lot">
-            {% for lot in loty%}
-            <option>{{lot}}</option>
-            {%endfor%}
-        </select> <br> <br>
-            <label><input type="checkbox" name="wym1">Wiecej miejsca na nogi</label> <br>
-            <label><input type="checkbox" name="wym2">Można usiąść z dzieckiem</label> <br>
-            <label><input type="checkbox" name="wym3">Blisko wyjścia</label> <br>
-            <label><input type="checkbox" name="wym4">Przy oknie</label> <br>
-      <input style="width:170px" class="btn btn-success" type="submit" value="Wybierz miejsce">
+      <label>Liczba miejsc:</label><input type="number" name="ilosc" min="1" max="5"> <br>
+        <p style="font-color: red">{{error}}</p>-->
 
+        {%csrf_token%}
+      {% for field in form %}
+        <div class="fieldWrapper">
+            {% for error in field.errors %}
+            <p>{{error}}</p>
+            {% endfor %}
+            {{ field.label_tag }}<pre>{{ field }}</pre>
+            {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+      <input style="width:170px" class="btn btn-success" type="submit" value="Zarezerwuj">
     </form>
   </div>
 </div>
 {% endblock %}
-

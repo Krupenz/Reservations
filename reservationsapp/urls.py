@@ -8,6 +8,9 @@ from . import views
 app_name = 'RezerwacjeApp'
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('pasazer/', views.pasazer, name='pasazer'),
-    path('siedzenia/<pasazer_id>/<lot>', views.siedzenia, name='siedzenia')
+    path('', views.redirect),
+    path('wybor_lotu/<int:id>/pasazer', views.pasazer, name='lot'),
+    path('rezerwacje/',views.rezerwacje,name='rezerwacje'),
+    path('<int:id>/rezerwacje/',views.rezerwacje,name='rezerwacje'),
+    path('wybor_lotu/',views.wybor_lotu,name='wybor_lotu')
 ]
